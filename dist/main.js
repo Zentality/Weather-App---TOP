@@ -1,0 +1,1 @@
+(()=>{const e=document.querySelector("form"),t=document.querySelector("#query");e.addEventListener("submit",(e=>{e.preventDefault(),async function(e){fetch(`http://api.openweathermap.org/data/2.5/weather?q=${e}&APPID=5486debd66620876ff108c5a748811d1`,{mode:"cors"}).then((e=>e.json())).then((e=>{!function(e){console.log(e)}(e)})).catch((e=>{console.log(e)}))}(t.value)}))})();
