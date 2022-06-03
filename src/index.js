@@ -11,9 +11,9 @@ async function getWeather(location) {
 }
 
 const config = (() => {
-  let isFahrenheit = false;
+  let isFahrenheit = true;
   return { isFahrenheit }
-})
+})();
 
 const element = (() => {
   const form = document.querySelector("form");
@@ -50,7 +50,7 @@ function getCountryFromCode(code) {
 function getTempFromK(isFahrenheit, kelvinValue) {
   const celcius = Number(kelvinValue) - 273.15;
   if (isFahrenheit) {
-    return celcius * (9 / 5) + 32;
+    return (celcius * (9 / 5) + 32);
   } else {
     return celcius;
   }
