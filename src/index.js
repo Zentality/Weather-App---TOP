@@ -1,10 +1,10 @@
 const countryCodes = require('country-codes-list');
 
 async function getWeather(location) {
-  fetch(`http://api.openweathermap.org/data/2.5/weather?q=${location}&APPID=5486debd66620876ff108c5a748811d1`, { mode: 'cors' })
+  fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=1&appid=5486debd66620876ff108c5a748811d1`, { mode: 'cors' })
     .then((response) => response.json())
     .then((response) => {
-      loadWeatherData(response);
+      loadWeatherLocation(response);
     }).catch((err) => {
       console.log(err);
     })
@@ -32,12 +32,23 @@ const element = (() => {
   return { city, country, temperatureNow, feelsLike }
 })();
 
-function loadWeatherData(response) {
+async function loadWeatherLocation(response) {
   console.log(response);
 
-  element.city.textContent = `${response.name}, `;
-  element.country.textContent = getCountryFromCode(response.sys.country);
+  element.city.textContent = `${response[0].name}, `;
+  element.country.textContent = getCountryFromCode(response[0].country);
 
+  fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${response[0].lat}&lon=${response[0].lon}&appid=5486debd66620876ff108c5a748811d1`, { mode: 'cors' })
+    .then((response) => response.json())
+    .then((response) => {
+      loadCurrentWeatherData(response);
+    }).catch((err) => {
+      console.log(err);
+    })
+}
+
+function loadCurrentWeatherData(response) {
+  console.log(response);
   element.temperatureNow.textContent = getTempFromK(config.isFahrenheit, response.main.temp);
   element.feelsLike.textContent = getTempFromK(config.isFahrenheit, response.main.feels_like);
 }
@@ -50,8 +61,8 @@ function getCountryFromCode(code) {
 function getTempFromK(isFahrenheit, kelvinValue) {
   const celcius = Number(kelvinValue) - 273.15;
   if (isFahrenheit) {
-    return (celcius * (9 / 5) + 32);
+    return Math.floor(celcius * (9 / 5) + 32);
   } else {
-    return celcius;
+    return Math.floor(celcius);
   }
 }
