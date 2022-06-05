@@ -26,6 +26,7 @@ const element = (() => {
   const forecastSymbols = document.querySelectorAll(".weatherSymbol");
   const forecastTemps = document.querySelectorAll(".tempRange");
   const forecastDateRange = document.querySelector(".forecastDateRange");
+  const forecastDates = document.querySelectorAll(".date");
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -33,7 +34,7 @@ const element = (() => {
     formInput.value = "";
   })
 
-  return { city, country, temperatureNow, feelsLike, forecastDays, forecastSymbols, forecastTemps }
+  return { city, country, temperatureNow, feelsLike, forecastDays, forecastSymbols, forecastTemps, forecastDateRange, forecastDates }
 })();
 
 async function loadWeatherLocation(response) {
@@ -61,10 +62,10 @@ function loadCurrentWeatherData(tempInK, feelsLikeInK) {
 }
 
 function loadForecast(forecastData, timezoneOffset) {
-  console.log(forecastData);
-  console.log(timezoneOffset);
   for (let i = 0; i < 8; i++) {
-    element.forecastDays[i].textContent = getDateFromUnixTime(forecastData[i].dt + timezoneOffset);
+    dateDetails = getDateFromUnixTime(forecastData[i].dt + timezoneOffset);
+    element.forecastDays[i].textContent = dateDetails.dayOfWeek;
+    element.forecastDates[i].textContent = `${dateDetails.dayOfMonth} ${dateDetails.month}`;
   }
 }
 
@@ -74,21 +75,29 @@ function getCountryFromCode(code) {
 }
 
 function getDateFromUnixTime(timestamp) {
-  console.log(timestamp);
+  const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const monthsOfYear = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
   const date = new Date(timestamp * 1000);
-  const dayOfWeek = convertIndexToDay()
-  function convertIndexToDay() {
-    switch (date.getDay()) {
-      case 0: return "Sunday";
-      case 1: return "Monday";
-      case 2: return "Tuesday";
-      case 3: return "Wednesday";
-      case 4: return "Thursday";
-      case 5: return "Friday";
-      case 6: return "Saturday";
+  const dayOfWeek = daysOfWeek[date.getDay()];
+  const month = monthsOfYear[date.getMonth()];
+  const dayOfMonth = getDayOfMonth();
+  function getDayOfMonth() {
+    const day = String(date.getDate());
+    const lastDigit = day.charAt(day.length - 1);
+    if (day == 11 || day == 12 || day == 13) {
+      return `${day}th`;
+    } else if (lastDigit == 1) {
+      return `${day}st`;
+    } else if (lastDigit == 2) {
+      return `${day}nd`;
+    } else if (lastDigit == 3) {
+      return `${day}rd`;
+    } else {
+      return `${day}th`;
     }
   }
-  return (`${dayOfWeek}`)
+  return { dayOfWeek, dayOfMonth, month };
 }
 
 function getTempFromK(isFahrenheit, kelvinValue) {
