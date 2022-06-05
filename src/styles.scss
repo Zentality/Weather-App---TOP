@@ -1,0 +1,20 @@
+body {
+  background-color: rgb(230,230,230);
+}
+
+.forecast {
+  display: flex;
+  flex-direction: column;
+  .forecastDateRange {
+    align-self: center;
+  }
+  .forecastWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    &>div{
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}

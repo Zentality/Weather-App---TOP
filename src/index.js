@@ -1,3 +1,4 @@
+import './styles.css';
 const countryCodes = require('country-codes-list');
 
 async function getWeather(location) {
@@ -11,7 +12,7 @@ async function getWeather(location) {
 }
 
 const config = (() => {
-  let isFahrenheit = true;
+  let isFahrenheit = false;
   return { isFahrenheit }
 })();
 
@@ -33,6 +34,8 @@ const element = (() => {
     getWeather(formInput.value);
     formInput.value = "";
   })
+
+  document.onload = getWeather("Paris");
 
   return { city, country, temperatureNow, feelsLike, forecastDays, forecastSymbols, forecastTemps, forecastDateRange, forecastDates }
 })();
@@ -63,9 +66,16 @@ function loadCurrentWeatherData(tempInK, feelsLikeInK) {
 
 function loadForecast(forecastData, timezoneOffset) {
   for (let i = 0; i < 8; i++) {
-    dateDetails = getDateFromUnixTime(forecastData[i].dt + timezoneOffset);
+    const dateDetails = getDateFromUnixTime(forecastData[i].dt + timezoneOffset);
     element.forecastDays[i].textContent = dateDetails.dayOfWeek;
     element.forecastDates[i].textContent = `${dateDetails.dayOfMonth} ${dateDetails.month}`;
+
+    const symbol = document.createElement("img");
+    symbol.src = `http://openweathermap.org/img/wn/${forecastData[i].weather[0].icon}@2x.png`;
+    symbol.alt = forecastData[i].weather[0].main;
+    symbol.title = forecastData[i].weather[0].description;
+    element.forecastSymbols[i].textContent = "";
+    element.forecastSymbols[i].appendChild(symbol);
   }
 }
 
