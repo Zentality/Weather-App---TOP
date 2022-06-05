@@ -2,7 +2,7 @@ import './styles.css';
 const countryCodes = require('country-codes-list');
 
 async function getWeather(location) {
-  fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=1&appid=5486debd66620876ff108c5a748811d1`, { mode: 'cors' })
+  fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=1&appid=5486debd66620876ff108c5a748811d1`, { mode: 'cors' })
     .then((response) => response.json())
     .then((response) => {
       loadWeatherLocation(response);
@@ -79,7 +79,7 @@ function loadForecast(forecastData, timezoneOffset) {
 
     const forecastSymbol = document.createElement("div");
     const symbol = document.createElement("img");
-    symbol.src = `http://openweathermap.org/img/wn/${forecastData[i].weather[0].icon}@2x.png`;
+    symbol.src = `https://openweathermap.org/img/wn/${forecastData[i].weather[0].icon}@2x.png`;
     symbol.alt = forecastData[i].weather[0].main;
     symbol.title = forecastData[i].weather[0].description;
     forecastSymbol.appendChild(symbol);
