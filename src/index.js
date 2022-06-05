@@ -85,7 +85,12 @@ function loadForecast(forecastData, timezoneOffset) {
     forecastSymbol.appendChild(symbol);
 
     const forecastTemps = document.createElement("div");
-    forecastTemps.textContent = `${getTempFromK(config.isFahrenheit, forecastData[i].temp.max)}, ${getTempFromK(config.isFahrenheit, forecastData[i].temp.min)}`
+    forecastTemps.classList.add("forecastTemps")
+    const hiTemp = document.createElement("span");
+    hiTemp.textContent = getTempFromK(config.isFahrenheit, forecastData[i].temp.max);
+    const loTemp = document.createElement("span");
+    loTemp.textContent = getTempFromK(config.isFahrenheit, forecastData[i].temp.min);
+    forecastTemps.append(hiTemp, loTemp);
 
     forecastDay.append(forecastDayOfWeek, forecastSymbol, forecastTemps);
     element.forecastWrapper.append(forecastDay);
@@ -132,8 +137,8 @@ function getDateFromUnixTime(timestamp) {
 function getTempFromK(isFahrenheit, kelvinValue) {
   const celcius = Number(kelvinValue) - 273.15;
   if (isFahrenheit) {
-    return `${Math.floor(celcius * (9 / 5) + 32)}°f`;
+    return `${Math.floor(celcius * (9 / 5) + 32)}°F`;
   } else {
-    return `${Math.floor(celcius)}°c`;
+    return `${Math.floor(celcius)}°C`;
   }
 }
