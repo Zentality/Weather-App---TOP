@@ -16,13 +16,17 @@ html {
   background-position: center center;
 }
 
+body {
+  overflow-y: overlay;
+}
+
 .wrapper {
-  padding: 32px 0 0 0;
+  height: 100vh;
+  padding: 32px 32px 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: 100vh;
   box-sizing: border-box;
 }
 
@@ -83,7 +87,6 @@ html {
 }
 
 .forecast {
-  padding: 0 16px 16px;
   box-sizing: border-box;
   width: 100%;
   display: flex;
@@ -107,5 +110,29 @@ html {
   .forecastTemps>span:last-child {
     color: rgb(170,170,170);
     padding-left: 8px;
+  }
+}
+
+.footer {
+  padding: 4px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+  }
+  img {
+    filter: invert(100%) sepia(0%) saturate(3%) hue-rotate(141deg) brightness(102%) contrast(100%);
+    margin: 0 8px;
+    transition-duration: 200ms;
+    height: 32px;
+  }
+  img:hover {
+    transition-duration: 1000ms;
+    transform: rotate(720deg) scale(1.2);
   }
 }
