@@ -28,6 +28,7 @@ const element = (() => {
   const forecastTemps = document.querySelectorAll(".tempRange");
   const forecastDateRange = document.querySelector(".forecastDateRange");
   const forecastDates = document.querySelectorAll(".date");
+  const forecastWrapper = document.querySelector(".forecastWrapper");
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -37,7 +38,7 @@ const element = (() => {
 
   document.onload = getWeather("Paris");
 
-  return { city, country, temperatureNow, feelsLike, forecastDays, forecastSymbols, forecastTemps, forecastDateRange, forecastDates }
+  return { city, country, temperatureNow, feelsLike, forecastDays, forecastSymbols, forecastTemps, forecastDateRange, forecastDates, forecastWrapper }
 })();
 
 async function loadWeatherLocation(response) {
@@ -67,17 +68,27 @@ function loadCurrentWeatherData(tempInK, feelsLikeInK) {
 function loadForecast(forecastData, timezoneOffset) {
   for (let i = 0; i < 8; i++) {
     const dateDetails = getDateFromUnixTime(forecastData[i].dt + timezoneOffset);
-    element.forecastDays[i].textContent = dateDetails.dayOfWeek;
-    element.forecastDates[i].textContent = `${dateDetails.dayOfMonth} ${dateDetails.month}`;
 
+    const forecastDay = document.createElement("div");
+
+    const forecastDayOfWeek = document.createElement("div");
+    forecastDayOfWeek.textContent = dateDetails.dayOfWeek;
+
+    const forecastDate = document.createElement("div");
+    forecastDate.textContent = `${dateDetails.dayOfMonth} ${dateDetails.month}`;
+
+    const forecastSymbol = document.createElement("div");
     const symbol = document.createElement("img");
     symbol.src = `http://openweathermap.org/img/wn/${forecastData[i].weather[0].icon}@2x.png`;
     symbol.alt = forecastData[i].weather[0].main;
     symbol.title = forecastData[i].weather[0].description;
-    element.forecastSymbols[i].textContent = "";
-    element.forecastSymbols[i].appendChild(symbol);
+    forecastSymbol.appendChild(symbol);
 
-    element.forecastTemps[i].textContent = `${getTempFromK(config.isFahrenheit, forecastData[i].temp.max)}, ${getTempFromK(config.isFahrenheit, forecastData[i].temp.min)}`
+    const forecastTemps = document.createElement("div");
+    forecastTemps.textContent = `${getTempFromK(config.isFahrenheit, forecastData[i].temp.max)}, ${getTempFromK(config.isFahrenheit, forecastData[i].temp.min)}`
+
+    forecastDay.append(forecastDayOfWeek, forecastDate, forecastSymbol, forecastTemps);
+    element.forecastWrapper.append(forecastDay);
   }
 }
 
@@ -94,6 +105,7 @@ function getDateFromUnixTime(timestamp) {
   const dayOfWeek = daysOfWeek[date.getDay()];
   const month = monthsOfYear[date.getMonth()];
   const dayOfMonth = getDayOfMonth();
+  const year = date.getFullYear();
   function getDayOfMonth() {
     const day = String(date.getDate());
     const lastDigit = day.charAt(day.length - 1);
@@ -109,7 +121,7 @@ function getDateFromUnixTime(timestamp) {
       return `${day}th`;
     }
   }
-  return { dayOfWeek, dayOfMonth, month };
+  return { dayOfWeek, dayOfMonth, month, year };
 }
 
 function getTempFromK(isFahrenheit, kelvinValue) {
