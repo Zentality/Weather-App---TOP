@@ -76,6 +76,8 @@ function loadForecast(forecastData, timezoneOffset) {
     symbol.title = forecastData[i].weather[0].description;
     element.forecastSymbols[i].textContent = "";
     element.forecastSymbols[i].appendChild(symbol);
+
+    element.forecastTemps[i].textContent = `${getTempFromK(config.isFahrenheit, forecastData[i].temp.max)}, ${getTempFromK(config.isFahrenheit, forecastData[i].temp.min)}`
   }
 }
 
@@ -113,8 +115,8 @@ function getDateFromUnixTime(timestamp) {
 function getTempFromK(isFahrenheit, kelvinValue) {
   const celcius = Number(kelvinValue) - 273.15;
   if (isFahrenheit) {
-    return Math.floor(celcius * (9 / 5) + 32);
+    return `${Math.floor(celcius * (9 / 5) + 32)}°f`;
   } else {
-    return Math.floor(celcius);
+    return `${Math.floor(celcius)}°c`;
   }
 }
