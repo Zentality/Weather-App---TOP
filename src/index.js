@@ -23,11 +23,7 @@ const element = (() => {
   const country = document.querySelector(".country");
   const temperatureNow = document.querySelector(".temperatureNow");
   const feelsLike = document.querySelector(".feelsLike");
-  const forecastDays = document.querySelectorAll(".dayOfWeek");
-  const forecastSymbols = document.querySelectorAll(".weatherSymbol");
-  const forecastTemps = document.querySelectorAll(".tempRange");
   const forecastDateRange = document.querySelector(".forecastDateRange");
-  const forecastDates = document.querySelectorAll(".date");
   const forecastWrapper = document.querySelector(".forecastWrapper");
 
   form.addEventListener("submit", (e) => {
@@ -38,7 +34,7 @@ const element = (() => {
 
   document.onload = getWeather("Paris");
 
-  return { city, country, temperatureNow, feelsLike, forecastDays, forecastSymbols, forecastTemps, forecastDateRange, forecastDates, forecastWrapper }
+  return { city, country, temperatureNow, feelsLike, forecastDateRange, forecastWrapper }
 })();
 
 async function loadWeatherLocation(response) {
@@ -55,7 +51,6 @@ async function loadWeatherLocation(response) {
 }
 
 function loadWeatherData(response) {
-  console.log(response)
   loadCurrentWeatherData(response.current.temp, response.current.feels_like);
   loadForecast(response.daily, response.timezone_offset);
 }
@@ -66,16 +61,21 @@ function loadCurrentWeatherData(tempInK, feelsLikeInK) {
 }
 
 function loadForecast(forecastData, timezoneOffset) {
+  element.forecastWrapper.textContent = "";
+  let startDate = "";
+  let endDate = "";
   for (let i = 0; i < 8; i++) {
     const dateDetails = getDateFromUnixTime(forecastData[i].dt + timezoneOffset);
+    if (i === 0) {
+      startDate = `${dateDetails.month}, ${dateDetails.year}`
+    } else if (i === 7) {
+      endDate = `${dateDetails.month}, ${dateDetails.year}`
+    }
 
     const forecastDay = document.createElement("div");
 
     const forecastDayOfWeek = document.createElement("div");
-    forecastDayOfWeek.textContent = dateDetails.dayOfWeek;
-
-    const forecastDate = document.createElement("div");
-    forecastDate.textContent = `${dateDetails.dayOfMonth} ${dateDetails.month}`;
+    forecastDayOfWeek.textContent = `${dateDetails.dayOfWeek} ${dateDetails.dayOfMonth}`;
 
     const forecastSymbol = document.createElement("div");
     const symbol = document.createElement("img");
@@ -87,8 +87,13 @@ function loadForecast(forecastData, timezoneOffset) {
     const forecastTemps = document.createElement("div");
     forecastTemps.textContent = `${getTempFromK(config.isFahrenheit, forecastData[i].temp.max)}, ${getTempFromK(config.isFahrenheit, forecastData[i].temp.min)}`
 
-    forecastDay.append(forecastDayOfWeek, forecastDate, forecastSymbol, forecastTemps);
+    forecastDay.append(forecastDayOfWeek, forecastSymbol, forecastTemps);
     element.forecastWrapper.append(forecastDay);
+  }
+  if (startDate === endDate) {
+    element.forecastDateRange.textContent = startDate;
+  } else {
+    element.forecastDateRange.textContent = `${startDate} - ${endDate}`;
   }
 }
 
