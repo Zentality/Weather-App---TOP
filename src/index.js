@@ -5,7 +5,9 @@ async function getWeather(location) {
   fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=1&appid=5486debd66620876ff108c5a748811d1`, { mode: 'cors' })
     .then((response) => response.json())
     .then((response) => {
+      element.loadingSVG.style.display = "none";
       loadWeatherLocation(response);
+      element.temperatureNow.style.display = "block";
     }).catch((err) => {
       console.log(err);
     })
@@ -25,16 +27,19 @@ const element = (() => {
   const feelsLike = document.querySelector(".feelsLike");
   const forecastDateRange = document.querySelector(".forecastDateRange");
   const forecastWrapper = document.querySelector(".forecastWrapper");
+  const loadingSVG = document.querySelector(".loading");
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+    temperatureNow.style.display = "none";
+    loadingSVG.style.display = "block";
     getWeather(formInput.value);
     formInput.value = "";
   })
 
   document.onload = getWeather("Paris");
 
-  return { city, country, temperatureNow, feelsLike, forecastDateRange, forecastWrapper }
+  return { city, country, temperatureNow, feelsLike, forecastDateRange, forecastWrapper, loadingSVG }
 })();
 
 async function loadWeatherLocation(response) {
